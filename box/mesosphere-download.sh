@@ -17,6 +17,9 @@ sudo apt-get -y update
 
 sudo apt-get -y install mesos marathon
 
+sudo service marathon stop
+sudo sh -c "echo manual > /etc/init/marathon.override"
+
 sudo service mesos-master stop
 sudo sh -c "echo manual > /etc/init/mesos-master.override"
 

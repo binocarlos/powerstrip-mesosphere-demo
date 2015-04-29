@@ -6,9 +6,6 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-export BRIDGE_ADDRESS=`cat /etc/flocker/bridge_address`
-export BREAKOUT_ADDRESS=`cat /etc/flocker/breakout_address`
-
 # a local way of writing a supervisor script
 write-service() {
   local service="$1";
@@ -52,8 +49,8 @@ init() {
 
   # pull any updates we have made to the powerstrip-base-install script
   # also bring in the k8s version
-  cd /srv/powerstrip-base-install && git pull
-  # && git checkout k8s-compat
+  cd /srv/powerstrip-base-install && git pull && git checkout k8s-compat
+
   echo "copying keys to /root/.ssh"
   cp /vagrant/insecure_private_key /root/.ssh/id_rsa
   chmod 600 /root/.ssh/id_rsa
@@ -86,7 +83,7 @@ cmd-master() {
   # start services
   supervisorctl reload
 
-  bash /vagrant/mesosphere-install.sh master
+  #bash /vagrant/mesosphere-install.sh master
   sleep 5
 }
 
@@ -136,7 +133,7 @@ EOF
 
   echo 2000 > /proc/sys/net/ipv4/neigh/default/base_reachable_time_ms
 
-  bash /vagrant/mesosphere-install.sh slave
+  #bash /vagrant/mesosphere-install.sh slave
   sleep 5
 }
 
