@@ -83,7 +83,7 @@ cmd-master() {
   # start services
   supervisorctl reload
 
-  #bash /vagrant/mesosphere-install.sh master
+  bash /vagrant/mesosphere-install.sh master
   sleep 5
 }
 
@@ -133,7 +133,7 @@ EOF
 
   echo 2000 > /proc/sys/net/ipv4/neigh/default/base_reachable_time_ms
 
-  #bash /vagrant/mesosphere-install.sh slave
+  bash /vagrant/mesosphere-install.sh slave
   sleep 5
 }
 

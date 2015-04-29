@@ -18,7 +18,7 @@ swarmvolumename="testswarm$unixsecs"
 # we write the datestring into the guestbook with no spaces because URL encoding
 writedate=`echo "$datestring" | sed 's/ //g'`
 
-echo "running test of basic Flocker migration without k8s"
+echo "running test of basic Flocker migration without mesos"
 
 # this will test that the underlying flocker mechanism is working
 # it runs an Ubuntu container on node1 that writes to a Flocker volume

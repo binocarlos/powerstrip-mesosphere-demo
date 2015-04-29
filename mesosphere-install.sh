@@ -40,9 +40,10 @@ setup-master() {
   echo "master.mesos" > /etc/marathon/conf/hostname
   rm /etc/init/zookeeper.override
   rm /etc/init/mesos-master.override
+  rm /etc/init/marathon.override
   sudo service zookeeper start
   sudo service mesos-master start
-  sudo service marathon restart
+  sudo service marathon start
 }
 
 setup-slave() {
