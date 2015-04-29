@@ -12,9 +12,10 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
  
-  config.vm.box = "powerstrip-k8s-demo-v1"
-  config.vm.box_url = "http://storage.googleapis.com/experiments-clusterhq/orchestration-demos/powerstrip-k8s-demo-v1.box"
-
+  config.vm.box = "powerstrip-mesosphere-demo-v1-local"
+  #config.vm.box_url = "http://storage.googleapis.com/experiments-clusterhq/orchestration-demos/powerstrip-mesosphere-demo-v1.box"
+  
+  config.vm.box_url = "file:///Users/kai/projects/powerstrip-mesosphere-demo/box/powerstrip-mesosphere-demo-v1.box"
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
   end
@@ -31,10 +32,8 @@ echo 172.16.255.251 > /etc/flocker/my_address
 echo 172.16.255.250 > /etc/flocker/master_address
 echo 172.16.255.251 > /etc/flocker/slave1_address
 echo 172.16.255.252 > /etc/flocker/slave2_address
-echo 10.2.2.1/24 > /etc/flocker/bridge_address
-echo 10.2.0.0/16 > /etc/flocker/breakout_address
 echo node1 > /etc/flocker/hostname
-bash /vagrant/install.sh minion --label storage=disk
+bash /vagrant/install.sh minion
 SCRIPT
   end
 
@@ -51,10 +50,8 @@ echo 172.16.255.250 > /etc/flocker/master_address
 echo 172.16.255.251 > /etc/flocker/slave1_address
 echo 172.16.255.252 > /etc/flocker/slave2_address
 echo 172.16.255.251 > /etc/flocker/peer_address
-echo 10.2.3.1/24 > /etc/flocker/bridge_address
-echo 10.2.0.0/16 > /etc/flocker/breakout_address
 echo node2 > /etc/flocker/hostname
-bash /vagrant/install.sh minion --label storage=ssd
+bash /vagrant/install.sh minion
 SCRIPT
   end
 
@@ -70,9 +67,6 @@ echo 172.16.255.250 > /etc/flocker/my_address
 echo 172.16.255.250 > /etc/flocker/master_address
 echo 172.16.255.251 > /etc/flocker/slave1_address
 echo 172.16.255.252 > /etc/flocker/slave2_address
-echo 172.16.255.251:2375,172.16.255.252:2375 > /etc/flocker/swarmips
-echo 10.2.1.1/24 > /etc/flocker/bridge_address
-echo 10.2.0.0/16 > /etc/flocker/breakout_address
 echo master > /etc/flocker/hostname
 bash /vagrant/install.sh master
 SCRIPT

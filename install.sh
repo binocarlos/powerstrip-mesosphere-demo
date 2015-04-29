@@ -25,13 +25,6 @@ activate-service() {
   bash /srv/powerstrip-base-install/ubuntu/install.sh service $1
 }
 
-cmd-bridge() {
-  /opt/bin/weave create-bridge
-  ip addr add dev weave $BRIDGE_ADDRESS
-  ip route add $BREAKOUT_ADDRESS dev weave scope link
-  ip route add 224.0.0.0/4 dev weave
-}
-
 # if a vagrant halt -> vagrant up happens
 # then this step is needed to bring up all the services again
 cmd-boot() {
@@ -42,31 +35,12 @@ cmd-boot() {
 
   if [[ $hostname == "master" ]]; then
     supervisorctl start flocker-control
-    service etcd start
-    service kube-controller start
-    service kube-scheduler start
-    service kube-apiserver start
   else
     supervisorctl start flocker-zfs-agent
     supervisorctl start powerstrip-flocker
     supervisorctl start powerstrip-weave
     supervisorctl start powerstrip
-    service kubelet start
-    service kube-proxy start
   fi
-}
-
-# here we are preparing the system for weave based k8s
-install-weave() {
-  mkdir -p /opt/bin/
-  #curl \
-  #  --silent \
-  #  --location \
-  #  https://github.com/weaveworks/weave/releases/download/v0.9.0/weave \
-  #  --output /opt/bin/weave
-  cp /vagrant/weave /opt/bin/weave
-  chmod +x /opt/bin/weave
-  cmd-bridge
 }
 
 # basic setup such as copy this script to /srv
@@ -78,7 +52,8 @@ init() {
 
   # pull any updates we have made to the powerstrip-base-install script
   # also bring in the k8s version
-  cd /srv/powerstrip-base-install && git pull && git checkout k8s-compat
+  cd /srv/powerstrip-base-install && git pull
+  # && git checkout k8s-compat
   echo "copying keys to /root/.ssh"
   cp /vagrant/insecure_private_key /root/.ssh/id_rsa
   chmod 600 /root/.ssh/id_rsa
@@ -88,10 +63,7 @@ init() {
   # include functions from the powerstrip lib
   . /srv/powerstrip-base-install/ubuntu/lib.sh
 
-  # install / configure the weave bridge
-  install-weave
-
-  powerstrip-base-install-configure-docker --bridge="weave" $@
+  powerstrip-base-install-configure-docker $@
 
   sleep 2
 }
@@ -114,29 +86,8 @@ cmd-master() {
   # start services
   supervisorctl reload
 
-  bash /vagrant/kube-install.sh master
+  bash /vagrant/mesosphere-install.sh master
   sleep 5
-
-  chmod a+rx /usr/bin/kubectl
-
-  # wait for the nodes to be up and then label them
-  local node1=`sudo kubectl get nodes | grep democluster-node1`
-  local node2=`sudo kubectl get nodes | grep democluster-node2`
-
-  while [[ -z "$node1" ]]; do
-    node1=`sudo kubectl get nodes | grep democluster-node1`
-    sleep 1
-  done
-
-  while [[ -z "$node2" ]]; do
-    node2=`sudo kubectl get nodes | grep democluster-node2`
-    sleep 1
-  done
-
-  sleep 5
-
-  kubectl label --overwrite nodes democluster-node1 disktype=spinning
-  kubectl label --overwrite nodes democluster-node2 disktype=ssd
 }
 
 # /etc/flocker/my_address
@@ -166,7 +117,7 @@ adapters:
   weave: http://weave/weave-adapter
 EOF
 
-  DOCKER_HOST=unix:///var/run/docker.real.sock docker pull binocarlos/powerstrip-k8s-demo:frontend
+  #DOCKER_HOST=unix:///var/run/docker.real.sock docker pull binocarlos/powerstrip-k8s-demo:frontend
 
   # pull minion images
   #powerstrip-base-install-pullimage ubuntu:latest
@@ -185,7 +136,8 @@ EOF
 
   echo 2000 > /proc/sys/net/ipv4/neigh/default/base_reachable_time_ms
 
-  bash /vagrant/kube-install.sh slave
+  bash /vagrant/mesosphere-install.sh slave
+  sleep 5
 }
 
 cmd-weave() {
@@ -222,11 +174,8 @@ cat <<EOF
 Usage:
 install.sh master
 install.sh minion
-install.sh tcptunnel
-install.sh swarm
 install.sh weave
 install.sh debug
-install.sh bridge
 install.sh boot
 install.sh help
 EOF
@@ -239,7 +188,6 @@ main() {
   minion)                   shift; cmd-minion $@;;
   weave)                    shift; cmd-weave $@;;
   debug)                    shift; cmd-debug $@;;
-  bridge)                   shift; cmd-bridge $@;;
   boot)                     shift; cmd-boot $@;;
   *)                        usage $@;;
   esac
