@@ -40,8 +40,17 @@ cmd-boot() {
   fi
 }
 
+remove-puppet-chef() {
+  sudo service puppet stop
+  sudo sh -c "echo manual > /etc/init/puppet.override"
+  sudo service chef-client stop
+  sudo sh -c "echo manual > /etc/init/chef-client.override"
+}
+
 # basic setup such as copy this script to /srv
 init() {
+  remove-puppet-chef
+  
   cp -f /vagrant/install.sh /srv/install.sh
 
   #apt-get remove -y puppet

@@ -36,3 +36,8 @@ The next step is to SSH into the master node.
 ```bash
 $ vagrant ssh master
 ```
+
+## Reference
+
+ * [Setting up Mesosphere on Ubuntu](https://docs.mesosphere.com/getting-started/datacenter/install/)
+ * [Configure a Production-Ready Mesosphere Cluster](https://www.digitalocean.com/community/tutorials/how-to-configure-a-production-ready-mesosphere-cluster-on-ubuntu-14-04)

@@ -20,6 +20,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.cache.scope = :box
   end
 
+  config.vm.define "master" do |master|
+    master.vm.network :private_network, :ip => "172.16.255.250"
+    master.vm.hostname = "master"
+    master.vm.provider "virtualbox" do |v|
+      v.memory = 1536
+    end
+    master.vm.network :forwarded_port, guest: 5050, host: 5050
+    master.vm.network :forwarded_port, guest: 8080, host: 8080
+    master.vm.provision "shell", inline: <<SCRIPT
+mkdir -p /etc/flocker
+echo 172.16.255.250 > /etc/flocker/my_address
+echo 172.16.255.250 > /etc/flocker/master_address
+echo 172.16.255.251 > /etc/flocker/slave1_address
+echo 172.16.255.252 > /etc/flocker/slave2_address
+echo master > /etc/flocker/hostname
+bash /vagrant/install.sh master
+SCRIPT
+  end
+
   config.vm.define "node1" do |node1|
     node1.vm.network :private_network, :ip => "172.16.255.251"
     node1.vm.hostname = "node1"
@@ -54,22 +73,4 @@ echo node2 > /etc/flocker/hostname
 bash /vagrant/install.sh minion
 SCRIPT
   end
-
-  config.vm.define "master" do |master|
-    master.vm.network :private_network, :ip => "172.16.255.250"
-    master.vm.hostname = "master"
-    master.vm.provider "virtualbox" do |v|
-      v.memory = 1536
-    end
-    master.vm.provision "shell", inline: <<SCRIPT
-mkdir -p /etc/flocker
-echo 172.16.255.250 > /etc/flocker/my_address
-echo 172.16.255.250 > /etc/flocker/master_address
-echo 172.16.255.251 > /etc/flocker/slave1_address
-echo 172.16.255.252 > /etc/flocker/slave2_address
-echo master > /etc/flocker/hostname
-bash /vagrant/install.sh master
-SCRIPT
-  end
-
 end
