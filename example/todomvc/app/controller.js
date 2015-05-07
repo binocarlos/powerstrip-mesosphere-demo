@@ -17,17 +17,11 @@ var save = function(request, reply){
 };
 
 var update = function(request, reply){
-  console.log('-------------------------------------------');
-  console.log(request.params.id)
-  console.dir(request.payload)
   delete(request.payload._id)
    Todo.findOneAndUpdate({
      _id:request.params.id
    }, request.payload, function (err, todo) {
     if (!err) {
-      console.log('-------------------------------------------');
-      console.log('-------------------------------------------');
-      console.dir(todo)
       reply(todo);
     } else {
       console.error(err)
