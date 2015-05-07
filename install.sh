@@ -41,10 +41,14 @@ cmd-boot() {
 }
 
 remove-puppet-chef() {
-  sudo service puppet stop
   sudo sh -c "echo manual > /etc/init/puppet.override"
-  sudo service chef-client stop
   sudo sh -c "echo manual > /etc/init/chef-client.override"
+  sudo service chef-client stop
+  sudo service puppet stop
+  sudo apt-get remove -y --auto-remove puppet
+  sudo apt-get purge -y --auto-remove puppet
+  sudo apt-get remove -y --auto-remove chef
+  sudo apt-get purge -y --auto-remove chef
 }
 
 # basic setup such as copy this script to /srv
@@ -141,7 +145,7 @@ EOF
   supervisorctl reload
 
   echo 2000 > /proc/sys/net/ipv4/neigh/default/base_reachable_time_ms
-
+  sleep 5
   bash /vagrant/mesosphere-install.sh slave
   sleep 5
 }

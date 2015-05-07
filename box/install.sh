@@ -33,4 +33,14 @@ powerstrip-base-install-pullimage binocarlos/multi-http-demo-api
 powerstrip-base-install-pullimage binocarlos/multi-http-demo-server
 
 bash /vagrant/mesosphere-download.sh
+
+sh -c "echo manual > /etc/init/puppet.override"
+sh -c "echo manual > /etc/init/chef-client.override"
+service chef-client stop
+service puppet stop
+apt-get remove -y --auto-remove puppet
+apt-get purge -y --auto-remove puppet
+apt-get remove -y --auto-remove chef
+apt-get purge -y --auto-remove chef
+
 apt-get clean

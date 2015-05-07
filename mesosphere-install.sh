@@ -39,10 +39,10 @@ setup-master() {
   echo "zk://$MASTER_IP:2181/mesos" > /etc/mesos/zk
   cp /etc/mesos/zk /etc/marathon/conf/master
   echo "zk://$MASTER_IP:2181/marathon" > /etc/marathon/conf/zk
-  echo "1" > /etc/mesos-master/quorum
-  #echo "$MASTER_IP" > /etc/mesos-master/hostname
-  #echo "$MASTER_IP" > /etc/mesos-master/ip
-  #echo "$MASTER_IP" > /etc/marathon/conf/hostname
+  #echo "1" > /etc/mesos-master/quorum
+  echo "$MY_ADDRESS" > /etc/mesos-master/hostname
+  echo "$MY_ADDRESS" > /etc/mesos-master/ip
+  echo "$MY_ADDRESS" > /etc/marathon/conf/hostname
   
   rm /etc/init/zookeeper.override
   rm /etc/init/mesos-master.override
@@ -56,13 +56,16 @@ setup-slave() {
   mkdir -p /etc/mesos
   mkdir -p /etc/mesos-slave
   mkdir -p /etc/marathon/conf
-  #echo "$MY_ADDRESS" > /etc/mesos-slave/hostname
-  #echo "$MY_ADDRESS" > /etc/mesos-slave/ip
-  #echo "$MY_ADDRESS" > /etc/marathon/conf/hostname
+  echo 'docker,mesos' > /etc/mesos-slave/containerizers
+  cp /etc/flocker/mesos-attributes /etc/mesos-slave/attributes
+  echo '5mins' > /etc/mesos-slave/executor_registration_timeout
   echo "zk://$MASTER_IP:2181/mesos" > /etc/mesos/zk
-  #echo "zk://$MASTER_IP:2181/mesos" > /etc/mesos-slave/master
-
+  echo "$MY_ADDRESS" > /etc/mesos-slave/hostname
+  echo "$MY_ADDRESS" > /etc/mesos-slave/ip
+  echo "$MY_ADDRESS" > /etc/marathon/conf/hostname
   rm /etc/init/mesos-slave.override
+
+  sleep 10
   sudo service mesos-slave start
 }
 

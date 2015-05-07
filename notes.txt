@@ -1,0 +1,14 @@
+# list current tasks
+curl http://172.16.255.250:8080/v2/tasks
+
+# open marathon gui
+http://172.16.255.250:8080
+
+# delete db app
+curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db
+
+# deploy the database to node2
+# replace spinning with ssd and then pipe json into curl
+cat examples/multihttp/db.json | \
+sed 's/spinning/ssd/' | \
+curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps

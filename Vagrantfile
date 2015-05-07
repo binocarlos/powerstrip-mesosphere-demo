@@ -52,6 +52,7 @@ echo 172.16.255.250 > /etc/flocker/master_address
 echo 172.16.255.251 > /etc/flocker/slave1_address
 echo 172.16.255.252 > /etc/flocker/slave2_address
 echo node1 > /etc/flocker/hostname
+echo disk:spinning > /etc/flocker/mesos-attributes
 bash /vagrant/install.sh minion
 SCRIPT
   end
@@ -70,6 +71,7 @@ echo 172.16.255.251 > /etc/flocker/slave1_address
 echo 172.16.255.252 > /etc/flocker/slave2_address
 echo 172.16.255.251 > /etc/flocker/peer_address
 echo node2 > /etc/flocker/hostname
+echo disk:ssd > /etc/flocker/mesos-attributes
 bash /vagrant/install.sh minion
 SCRIPT
   end

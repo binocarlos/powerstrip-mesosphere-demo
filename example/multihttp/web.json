@@ -1,0 +1,32 @@
+{
+  "id":"web",
+  "instances":1,
+  "mem": 256,
+  "cpus":0.2,
+  "env":{
+    "WEAVE_CIDR":"10.255.0.11/24",
+    "API_IP":"10.255.0.10"
+  },
+  "container":{
+    "type":"DOCKER",
+    "docker":{
+      "image":"binocarlos/multi-http-demo-server:latest",
+      "network": "BRIDGE",
+      "portMappings": [{
+        "containerPort": 8080,
+        "hostPort": 80,
+        "protocol": "tcp"
+      }],
+      "parameters": [{
+        "key": "hostname",
+        "value": "node1"
+      }]
+    },
+    "forcePullImage":true
+  },
+  "ports":[
+    80
+  ],
+  "constraints": [["hostname", "UNIQUE", ""]],
+  "cmd":""
+}
