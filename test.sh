@@ -14,7 +14,7 @@ fi
 datestring=$(date)
 unixsecs=$(date +%s)
 flockervolumename="testflocker$unixsecs"
-swarmvolumename="testswarm$unixsecs"
+
 # we write the datestring into the guestbook with no spaces because URL encoding
 writedate=`echo "$datestring" | sed 's/ //g'`
 
