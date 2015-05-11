@@ -1,0 +1,18 @@
+{
+  "id":"testweave",
+  "mem": 256,
+  "cpus":0.2,
+  "env":{
+    "WEAVE_CIDR":"10.255.0.52/8"
+  },
+  "container":{
+    "type":"DOCKER",
+    "docker":{
+      "image":"binocarlos/powerstrip-weave-example:latest",
+      "network": "BRIDGE"
+    },
+    "forcePullImage":true
+  },
+  "constraints": [["disk", "CLUSTER", "spinning"]],
+  "args":["apples"]
+}
