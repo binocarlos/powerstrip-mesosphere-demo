@@ -26,8 +26,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     master.vm.provider "virtualbox" do |v|
       v.memory = 1536
     end
-    master.vm.network :forwarded_port, guest: 5050, host: 5050
-    master.vm.network :forwarded_port, guest: 8080, host: 8080
     master.vm.provision "shell", inline: <<SCRIPT
 mkdir -p /etc/flocker
 echo 172.16.255.250 > /etc/flocker/my_address
