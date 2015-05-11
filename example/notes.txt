@@ -1,3 +1,15 @@
+# open marathon gui
+http://172.16.255.250:8080
+
+# deploy the database app
+cat example/todomvc/db.json | \
+curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+# deploy the web app
+cat example/todomvc/app.json | \
+curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+
 ### LIST TASKS
 
 # list current apps
@@ -18,18 +30,7 @@ curl -i -H 'Content-type: application/json' -d @- http://172.16.255.251:8080/v1
 # read data from the app (AUTO)
 curl http://172.16.255.251:8080/v1
 
-# deploy the database app
-cat example/todomvc/db.json | \
-curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
-
-# deploy the web app
-cat example/todomvc/app.json | \
-curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
-
 ### GOTO: LIST TASKS
-
-# open marathon gui
-http://172.16.255.250:8080
 
 # delete db app
 curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db
