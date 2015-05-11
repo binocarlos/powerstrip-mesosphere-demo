@@ -28,9 +28,8 @@ powerstrip-base-install-pullimages master
 powerstrip-base-install-pullimages minion
 powerstrip-base-install-powerstrip-config
 
-powerstrip-base-install-pullimage dockerfile/redis
-powerstrip-base-install-pullimage binocarlos/multi-http-demo-api
-powerstrip-base-install-pullimage binocarlos/multi-http-demo-server
+powerstrip-base-install-pullimage mongo
+powerstrip-base-install-pullimage binocarlos/powerstrip-mesosphere-demo
 
 bash /vagrant/mesosphere-download.sh
 
