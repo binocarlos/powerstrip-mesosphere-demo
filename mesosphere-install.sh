@@ -60,6 +60,7 @@ setup-slave() {
   cp /etc/flocker/mesos-attributes /etc/mesos-slave/attributes
   echo '5mins' > /etc/mesos-slave/executor_registration_timeout
   echo "zk://$MASTER_IP:2181/mesos" > /etc/mesos/zk
+  echo "ports:[7000-9000]" > /etc/mesos-slave/resources
   echo "$MY_ADDRESS" > /etc/mesos-slave/hostname
   echo "$MY_ADDRESS" > /etc/mesos-slave/ip
   echo "$MY_ADDRESS" > /etc/marathon/conf/hostname
