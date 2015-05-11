@@ -1,0 +1,28 @@
+{
+  "id":"web",
+  "mem": 256,
+  "cpus":0.2,
+  "env":{
+    "WEAVE_CIDR":"10.255.0.11/24",
+    "MONGO_URI":"mongodb://10.255.0.10:27017/todos",
+    "PORT":"80"
+  },
+  "container":{
+    "type":"DOCKER",
+    "docker":{
+      "image":"binocarlos/powerstrip-mesosphere-demo:latest",
+      "network": "BRIDGE",
+      "portMappings": [{
+        "containerPort": 80,
+        "hostPort": 8000,
+        "protocol": "tcp"
+      }]
+    },
+    "forcePullImage":true
+  },
+  "ports":[
+    8000
+  ],
+  "constraints": [["disk", "CLUSTER", "spinning"]],
+  "cmd":""
+}

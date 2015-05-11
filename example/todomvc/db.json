@@ -1,0 +1,23 @@
+{
+  "id":"db",
+  "mem": 256,
+  "cpus":0.2,
+  "env":{
+    "WEAVE_CIDR":"10.255.0.10/24"
+  },
+  "container":{
+    "type":"DOCKER",
+    "docker":{
+      "image":"mongo",
+      "network": "BRIDGE"
+    },
+    "volumes":[{
+      "containerPath": "/data/db",
+      "hostPath": "/flocker/data1",
+      "mode": "RW"
+    }],
+    "forcePullImage":true
+  },
+  "constraints": [["disk", "CLUSTER", "spinning"]],
+  "cmd":""
+}
