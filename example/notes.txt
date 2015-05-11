@@ -4,6 +4,15 @@ curl http://172.16.255.250:8080/v2/tasks
 # open marathon gui
 http://172.16.255.250:8080
 
+
+
+
+# deploy the database to node1
+curl -i -H 'Content-type: application/json' -d @example/todomvc/db.json http://172.16.255.250:8080/v2/apps
+
+# deploy the app to node1
+curl -i -H 'Content-type: application/json' -d @example/todomvc/app.json http://172.16.255.250:8080/v2/apps
+
 # delete db app
 curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db
 
