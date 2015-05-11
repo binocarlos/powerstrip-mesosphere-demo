@@ -5,4 +5,5 @@ build:
 	vagrant destroy -f
 	vagrant up
 	vagrant ssh -c "sudo bash /vagrant/install.sh"
+	vagrant ssh -c "sudo bash /vagrant/purge.sh"
 	vagrant package
