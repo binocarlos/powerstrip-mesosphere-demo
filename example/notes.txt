@@ -1,23 +1,48 @@
+### LIST TASKS
+
+# list current apps
+curl http://172.16.255.250:8080/v2/apps
+
 # list current tasks
 curl http://172.16.255.250:8080/v2/tasks
 
+### WRITE/READ DATA
+
+# open the app + input some data (MANUAL)
+http://172.16.255.251:8080
+
+# input some data to the app (AUTO)
+echo '{"text":"hello world"}' | \
+curl -i -H 'Content-type: application/json' -d @- http://172.16.255.251:8080/v1
+
+# read data from the app (AUTO)
+curl http://172.16.255.251:8080/v1
+
+# deploy the database app
+cat example/todomvc/db.json | \
+curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+# deploy the web app
+cat example/todomvc/app.json | \
+curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+### GOTO: LIST TASKS
+
 # open marathon gui
 http://172.16.255.250:8080
-
-
-
-
-# deploy the database to node1
-curl -i -H 'Content-type: application/json' -d @example/todomvc/db.json http://172.16.255.250:8080/v2/apps
-
-# deploy the app to node1
-curl -i -H 'Content-type: application/json' -d @example/todomvc/app.json http://172.16.255.250:8080/v2/apps
 
 # delete db app
 curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db
 
 # deploy the database to node2
-# replace spinning with ssd and then pipe json into curl
-cat examples/multihttp/db.json | \
+cat examples/todomvc/db.json | \
 sed 's/spinning/ssd/' | \
 curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+### GOTO: LIST TASKS
+
+### GOTO: WRITE/READ DATA
+
+#
+# https://groups.google.com/forum/#!searchin/marathon-framework/port$20resource/marathon-framework/XOQMb3M8TEI/xvfEWYXwpaAJ
+#
