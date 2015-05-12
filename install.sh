@@ -42,6 +42,7 @@ cmd-boot() {
 
 # basic setup such as copy this script to /srv
 init() {
+  cd /srv/powerstrip-base-install && git pull
   cp -f /vagrant/install.sh /srv/install.sh
 
   #apt-get remove -y puppet
@@ -93,6 +94,8 @@ cmd-minion() {
 
   # init copies the SSH keys and copies this script so it can be referenced by the supervisor scripts
   init $@
+
+  #DOCKER_HOST=unix:///var/run/docker.real.sock docker pull binocarlos/powerstrip-weave
 
   # k8s does not use a specific docker version rather it just does
   # POST /containers/create

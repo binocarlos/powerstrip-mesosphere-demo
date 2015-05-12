@@ -29,13 +29,33 @@ $ cd powerstrip-mesosphere-demo
 $ vagrant up
 ```
 
-### Step 2: SSH to master
+### Step 2: Open Marathon GUI
 
-The next step is to SSH into the master node.
+Now we open the marathon GUI so we can monitor our deployment.  Open a web browser and point it to this URL:
+
+```
+http://172.16.255.250:8080
+```
+
+### Step 3: Deploy the Mongo container
+
+First - we deploy our Mongo container to Marathon using the `example/todomvc/db.json` config.  This will schedule the container onto the host with the `spinning` disk.
 
 ```bash
-$ vagrant ssh master
+$ cat example/todomvc/db.json | \
+  curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
 ```
+
+### Step 4: Deploy the node.js container
+
+Then we deploy our app container to Marathon using the `example/todomvc/app.json` config:
+
+```bash
+$ cat example/todomvc/app.json | \
+  curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+```
+
+
 
 ## Reference
 
