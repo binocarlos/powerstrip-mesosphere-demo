@@ -42,7 +42,7 @@ cmd-boot() {
 
 # basic setup such as copy this script to /srv
 init() {
-  cd /srv/powerstrip-base-install && git pull
+  
   cp -f /vagrant/install.sh /srv/install.sh
 
   #apt-get remove -y puppet
