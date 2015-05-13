@@ -12,9 +12,9 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
  
-  config.vm.box = "powerstrip-mesosphere-demo-v4-local"
-  #config.vm.box_url = "http://storage.googleapis.com/experiments-clusterhq/orchestration-demos/powerstrip-mesosphere-demo-v3.box"
-  config.vm.box_url = "file:///Users/kai/projects/powerstrip-mesosphere-demo/box/powerstrip-mesosphere-demo-v4.box"
+  config.vm.box = "powerstrip-mesosphere-demo-v5"
+  config.vm.box_url = "http://storage.googleapis.com/experiments-clusterhq/orchestration-demos/powerstrip-mesosphere-demo-v5.box"
+  
 
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
