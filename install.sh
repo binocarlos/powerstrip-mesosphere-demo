@@ -95,10 +95,6 @@ cmd-minion() {
   # init copies the SSH keys and copies this script so it can be referenced by the supervisor scripts
   init $@
 
-  #DOCKER_HOST=unix:///var/run/docker.real.sock docker pull binocarlos/powerstrip-weave
-
-  # k8s does not use a specific docker version rather it just does
-  # POST /containers/create
   cat << EOF > /etc/powerstrip-demo/adapters.yml
 version: 1
 endpoints:
