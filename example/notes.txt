@@ -33,11 +33,11 @@ curl http://172.16.255.251:8080/v1
 ### GOTO: LIST TASKS
 
 # delete db app
-curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db
+curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db-spinning
 
 # deploy the database to node2
-cat examples/todomvc/db.json | \
-sed 's/spinning/ssd/' | \
+cat example/todomvc/db.json | \
+sed 's/spinning/ssd/g' | \
 curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
 
 ### GOTO: LIST TASKS
