@@ -1,11 +1,10 @@
 {
-  "id":"web",
-  "mem": 256,
-  "cpus":0.2,
+  "id":"app",
+  "mem": 128,
+  "cpus":0.1,
   "env":{
     "WEAVE_CIDR":"10.255.0.11/24",
-    "MONGO_URI":"mongodb://10.255.0.10:27017/todos",
-    "PORT":"80"
+    "MONGO_URI":"mongodb://10.255.0.10:27017/todos"
   },
   "container":{
     "type":"DOCKER",
@@ -13,7 +12,7 @@
       "image":"binocarlos/powerstrip-mesosphere-demo:latest",
       "network": "BRIDGE",
       "portMappings": [{
-        "containerPort": 80,
+        "containerPort": 8000,
         "hostPort": 8000,
         "protocol": "tcp"
       }]

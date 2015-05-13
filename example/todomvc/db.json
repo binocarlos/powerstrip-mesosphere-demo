@@ -1,7 +1,7 @@
 {
-  "id":"db",
-  "mem": 256,
-  "cpus":0.2,
+  "id":"mongo",
+  "mem": 128,
+  "cpus":0.1,
   "env":{
     "WEAVE_CIDR":"10.255.0.10/24"
   },
@@ -13,7 +13,7 @@
     },
     "volumes":[{
       "containerPath": "/data/db",
-      "hostPath": "/flocker/data1",
+      "hostPath": "/flocker/mongodata",
       "mode": "RW"
     }],
     "forcePullImage":true
