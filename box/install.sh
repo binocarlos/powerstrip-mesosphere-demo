@@ -22,6 +22,7 @@ flocker-base-install
 
 cd /srv
 git clone $POWERSTRIP_BASE_REPO
+cd /srv/powerstrip-base-install && git checkout k8s-compat
 . /srv/powerstrip-base-install/ubuntu/lib.sh
 powerstrip-base-install-setup
 powerstrip-base-install-pullimages master
