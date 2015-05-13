@@ -9,16 +9,11 @@ curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/
 cat example/todomvc/app.json | \
 curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
 
-
-### LIST TASKS
-
 # list current apps
 curl http://172.16.255.250:8080/v2/apps
 
 # list current tasks
 curl http://172.16.255.250:8080/v2/tasks
-
-### WRITE/READ DATA
 
 # open the app + input some data (MANUAL)
 http://172.16.255.251:8080
@@ -30,7 +25,11 @@ curl -i -H 'Content-type: application/json' -d @- http://172.16.255.251:8080/v1
 # read data from the app (AUTO)
 curl http://172.16.255.251:8080/v1
 
-### GOTO: LIST TASKS
+# list current apps
+curl http://172.16.255.250:8080/v2/apps
+
+# list current tasks
+curl http://172.16.255.250:8080/v2/tasks
 
 # delete db app
 curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db-spinning
@@ -40,9 +39,12 @@ cat example/todomvc/db.json | \
 sed 's/spinning/ssd/g' | \
 curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
 
-### GOTO: LIST TASKS
+# list current apps
+curl http://172.16.255.250:8080/v2/apps
 
-### GOTO: WRITE/READ DATA
+# list current tasks
+curl http://172.16.255.250:8080/v2/tasks
+
 
 #
 # https://groups.google.com/forum/#!searchin/marathon-framework/port$20resource/marathon-framework/XOQMb3M8TEI/xvfEWYXwpaAJ
