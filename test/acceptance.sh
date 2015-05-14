@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -x
+set -e
 
 #
 # powerstrip-mesos-demo acceptance test
@@ -22,9 +22,11 @@ SCRIPT_SRC="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # launch the mongo task via the Marathon REST api
 function launch-mongo() {
   local id=$1;
-  local node=$2;
+  local disk=$2;
 
-  cat $SCRIPT_SRC/example/todomvc/db.json | \
+  echo "launching mongo - $id - $disk"
+
+  cat $SCRIPT_SRC/../example/todomvc/db.json | \
   sed "s/\"id\":\"mongo\"/\"id\":\"mongo-$id\"/" | \
   sed "s/mongodata/mongodata$id/" | \
   sed "s/spinning/$disk/" | \
@@ -35,7 +37,8 @@ function launch-mongo() {
 function launch-app() {
   local id=$1;
   
-  cat $SCRIPT_SRC/example/todomvc/app.json | \
+  echo "launching app - $id"
+  cat $SCRIPT_SRC/../example/todomvc/app.json | \
   sed "s/\"id\":\"app\"/\"id\":\"app-$id\"/" | \
   curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
 }
@@ -55,7 +58,7 @@ function wait-for-mesos-task() {
   local running=$(is-mesos-task-running $1)
   while [[ "$running" == "null" ]]
   do
-    echo "wait for mesos task $1" && sleep 1
+    echo "wait for mesos task $1" && sleep 1    
     running=$(is-mesos-task-running $1)
   done
   echo "mesos task $1 is running"
@@ -77,7 +80,7 @@ function wait-for-docker-container() {
   local running=$(is-docker-container-running $node $container)
   while [[ -z "$running" ]]
   do
-    echo "wait for docker container $container on node $node" && sleep 1
+    echo "waiting for docker container $container on $node"
     running=$(is-docker-container-running $node $container)
   done
   echo "docker container $container on node $node is running"
@@ -90,7 +93,11 @@ function wait-for-job() {
   local node=$2
   local container=$3
 
+  echo ""
+  echo "waiting for job $task - $node - $container"
+
   wait-for-mesos-task $task
+  echo "waiting for docker container"
   wait-for-docker-container $node $container
 }
 
@@ -116,23 +123,21 @@ function check-entries() {
 
 
 function run-test() {
-  local unixsecs=$(date +%s)
-  local flockervolumename="testflocker$unixsecs"
+  local id=$(date +%s)
+  
+  launch-mongo $id spinning
+  launch-app $id
 
-  #launch-mongo $unixsecs spinning
-  wait-for-job mongo node1 mongo:latest
-  #launch-app $unixsecs
-  wait-for-job app node1 binocarlos/powerstrip-mesosphere-demo:latest
+  wait-for-job mongo-$id node1 mongo:latest
+  wait-for-job app-$id node1 binocarlos/powerstrip-mesosphere-demo:latest
 
+  #sleep 2
   #write-entry "apples" 0
-
   #sleep 2
-
   #write-entry "oranges" 1
-
   #sleep 2
-
   #write-entry "pears" 2
+  #sleep 2
 
   #check-entries
 }
