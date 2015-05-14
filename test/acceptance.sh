@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 #
 # powerstrip-mesos-demo acceptance test
 #
@@ -18,6 +16,11 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 SCRIPT_SRC="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+do-error() {
+  echo "$@" >&2
+  exit 1
+}
 
 # launch the mongo task via the Marathon REST api
 function launch-mongo() {
@@ -109,52 +112,105 @@ function write-entry() {
   local order=$2;
   local id="$unixsecs.$order"
 
+  echo "writing entry to todo app - $text $order"
+
   cat $SCRIPT_SRC/../test/entry.json | \
   sed "s/_ORDER_/$order/" | \
   sed "s/_TITLE_/$text/" | \
   sed "s/_ID_/$id/" | \
   curl -sS -H 'Content-type: application/json' -d @- http://172.16.255.251:8000/v1
   echo ""
+  sleep 1
 }
 
-# read the entries from the todo app
-function check-entries() {
-  curl -sS http://172.16.255.251:8000/v1
+# given a position and field - return the value for $field at entry # $position
+function get-entry-field() {
+  local position=$1
+  local field=$2
+
+  curl -sS http://172.16.255.251:8000/v1 | jq .[$position].$field | sed 's/"//g'
+}
+
+# check that the saved entry is what is should be (by checking the position and title)
+function check-entry() {
+  local entry=$1
+  local position=$2
+
+  echo "checking entry to todo app - $entry $position"
+
+  local titleval=$(get-entry-field $position title)
+  local orderval=$(get-entry-field $position order)
+
+  if [[ "$titleval" != "$entry" ]]; then
+    do-error "Entry in position $position - expected title to be $entry and got $titleval"
+  fi
+
+  if [[ "$orderval" != "$position" ]]; then
+    do-error "Entry in position $position - expected order to be $position and got $orderval"
+  fi
+
   echo ""
+  sleep 1
 }
 
+# tell marathon to delete an app
 function delete-app() {
   echo "Deleting app $1"
   curl -X "DELETE" http://172.16.255.250:8080/v2/apps/$1
   echo ""
 }
 
+# grab a list of apps from Marathon and remove each on if its id starts with mongo- or app-
 function delete-apps() {
-  local id=$1
-  delete-app mongo-$id
-  delete-app app-$id
+  local totalapps=$(curl -sS http://172.16.255.250:8080/v2/apps | jq '.apps | length')
+
+  echo "Found $totalapps apps"
+  local COUNTER=0
+  local DELETEAPPS=()
+  while [  $COUNTER -lt $totalapps ]; do
+
+    echo "Getting id for app $COUNTER"
+    local appid=$(curl -sS http://172.16.255.250:8080/v2/apps | jq ".apps[$COUNTER].id" | sed 's/"//g')
+
+    echo "Found $appid"
+    
+    if [[ "$appid" == *"/mongo-"* ]] || [[ "$appid" == *"/app-"* ]]; then
+      DELETEAPPS+=($appid)
+    fi
+
+    echo "$appid app deleted"
+
+    let COUNTER+=1
+  done
+
+  for deleteapp in "${DELETEAPPS[@]}"
+  do
+    delete-app $deleteapp
+  done
 }
 
+# main
 function run-test() {
   local id=$(date +%s)
   
-  #launch-mongo $id spinning
-  #launch-app $id
+  launch-mongo $id spinning
+  launch-app $id
 
-  #wait-for-job mongo-$id node1 mongo:latest
-  #wait-for-job app-$id node1 binocarlos/powerstrip-mesosphere-demo:latest
+  wait-for-job mongo-$id node1 mongo:latest
+  wait-for-job app-$id node1 binocarlos/powerstrip-mesosphere-demo:latest
 
-  sleep 2
+  echo "Marathon tasks are running"
+
+  sleep 5
   write-entry "apples" 0
-  sleep 2
   write-entry "oranges" 1
-  sleep 2
   write-entry "pears" 2
-  sleep 2
+  check-entry "apples" 0
+  check-entry "oranges" 1
+  check-entry "pears" 2
 
-  check-entries
-
-  delete-apps $id
+  delete-apps
 }
 
-run-test
+#run-test
+delete-apps
