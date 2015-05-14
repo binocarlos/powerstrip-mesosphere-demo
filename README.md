@@ -58,7 +58,8 @@ Now we open the Marathon GUI so we can monitor our deployment.  Open a web brows
 http://172.16.255.250:8080
 ```
 
-IMG: marathon screen shot (empty)
+![marathon web gui](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/marathon-empty.png "fig 3. marathon web gui")
+###### *fig 3. the Marathon web GUI before deployment*
 
 Also - we can open the Mesos GUI to monitor the underlying resource usage.  Open another web browser and point it to this URL:
 
@@ -66,7 +67,8 @@ Also - we can open the Mesos GUI to monitor the underlying resource usage.  Open
 http://172.16.255.250:5050
 ```
 
-IMG: mesos screen shot (empty)
+![mesos web gui](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/mesos-empty.png "fig 4. mesos web gui")
+###### *fig 4. the Mesos web GUI before deployment*
 
 ### Step 3: Deploy the Mongo container
 
@@ -90,7 +92,8 @@ $ cat example/todomvc/app.json \
 
 The Marathon GUI should display the 2 deployments.  
 
-IMG: marathon screen shot (with 2 apps)
+![marathon web gui](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/marathon-apps1.png "fig 5. marathon web gui")
+###### *fig 5. the Marathon web GUI after deployment*
 
 We can also check the status by using the REST API:
 
@@ -106,7 +109,8 @@ Next - open the application in a browser and add some todo entries.  Once you ha
 http://172.16.255.251:8000/
 ```
 
-IMG: todomvc screenshot
+![todomvc app](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/todomvc.png "fig 6. todomvc app")
+###### *fig 6. The todoMVC application*
 
 ### Step 7: Stop Mongo container
 
@@ -130,7 +134,8 @@ $ cat example/todomvc/db.json \
 
 Now we have moved the Mongo container - lets check the Marathon GUI for the deployment status.
 
-IMG: marathon screen shot (with 2 apps)
+![marathon web gui](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/marathon-apps2.png "fig 7. marathon web gui")
+###### *fig 7. the Marathon web GUI after the 2nd deployment*
 
 ### Step 10: Check data
 
@@ -140,6 +145,35 @@ Now we reload the application in a browser and check that the todo entries we ad
 http://172.16.255.251:8000/
 ```
 
+note: it sometimes take 10 seconds for the mongo container to be deployed and for the node.js container to connect to it.  If the data does not appear press refresh after 10 seconds.
+
+## How it works
+
+The key part of this demonstration is the usage of [Flocker](https://github.com/clusterhq/flocker) to migrate data from one server to another. To make [Flocker](https://github.com/clusterhq/flocker) work natively with Mesos and Marathon, we've used [Powerstrip](https://github.com/clusterhq/powerstrip). [Powerstrip](https://github.com/clusterhq/powerstrip) is an open-source project we started to prototype Docker extensions. 
+
+This demo uses the [Flocker](https://github.com/clusterhq/flocker) extension prototype ([powerstrip-flocker](https://github.com/clusterhq/powerstrip-flocker)). Once the official Docker extensions mechamisn is released, [Powerstrip](https://github.com/clusterhq/powerstrip) will go away and you’ll be able to use Flocker directly with Mesos & Marathon (or Docker Swarm, or Kubernetes) to perform database migrations.
+
+We have installed [Powerstrip](https://github.com/clusterhq/powerstrip) and [powerstrip-flocker](https://github.com/clusterhq/powerstrip-flocker) on each host.  This means that when Marathon starts a container with volumes - [powerstrip-flocker](https://github.com/clusterhq/powerstrip-flocker) is able to prepare / migrate the required data volumes before docker starts the container.
+
+### Mesos Cluster
+The master node (which controls the cluster) is running the following components:
+
+ * mesos-master - the master node for the mesos cluster
+ * marathon - a mesos framework that runs long running processes
+ * zookeeper - a distributed key/value store
+ * flocker-control-service - the control service for the Flocker cluster
+
+The 2 slave nodes each run:
+
+ * mesos-slave - the slave process that communicates with the mesos-master
+ * flocker-zfs-agent - the flocker slave process that communicates with the flocker-control-service
+ * powerstrip - the prototyping tool for Docker extensions
+ * powerstrip-flocker - a powerstrip adapter that creates ZFS volumes for containers
+ * powerstrip-weave - a powerstrip adapter that networks containers together across hosts
+
+![mesos diagram](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/overview.png "fig 3. mesos")
+###### *fig 4. overview of the Kubernetes cluster*
+
 ## Conclusion
 Mesos and Marathon are powerful tools to manage a cluster of machines as though they are one large computer.  We have shown in this demo that you can extend the behaviour of Mesos slaves using [Powerstrip](https://github.com/clusterhq/powerstrip) adapters (and soon official Docker extensions).
 
@@ -147,18 +181,7 @@ This demo made use of local storage for your data volumes. Local storage is fast
 
 We are also working on adding support for block storage so you can use that with your application.
 
-
 ## Notes
-
-#### Restart cluster
-
-If you `vagrant halt` the cluster - you will need to restart the cluster using this command:
-
-```bash
-$ make boot
-```
-
-This will `vagrant up` and then run `sudo bash /vagrant/install.sh boot` which spins up all the required services.
 
 ## run tests
 
@@ -168,17 +191,7 @@ To run the acceptance tests:
 $ make test
 ```
 
-This will `vagrant up` and then `bash test.sh`.
-
-`test.sh` will use `vagrant ssh -c ""` style commands to run through the following tests:
-
- * a basic data migration using powerstrip-flocker
- * launch the frontend and redis-master services and replication controllers
- * write some data to the guestbook
- * rewrite the redis-master rc
- * kill the redis-master pod
- * wait for the redis-master pod to be scheduled onto node2
- * check for the data migrated from node2
+NOTE: you need [jq](http://stedolan.github.io/jq/) installed on the machine that will run the tests
 
 ## Reference
 
