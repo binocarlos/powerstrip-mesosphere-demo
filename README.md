@@ -5,7 +5,7 @@
 
 [![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
 
-We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use Docker Swarm to migrate a database container and its volume between hosts using only the native Docker Swarm  CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use Kubernetes to acheive the same thing.
+We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use Docker Swarm to migrate a database container and its volume between hosts using only the native Docker Swarm  CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use Kubernetes to achieve the same thing.
 
 [Mesosphere](https://github.com/mesosphere) are building a [Data Center Operating System](https://mesosphere.com/), ClusterHQ have created [Flocker](https://github.com/clusterhq/flocker) - a data volume manager and Weaveworks have created [Weave](https://github.com/weaveworks/weave), a virtual overlay network for Docker containers.
 
