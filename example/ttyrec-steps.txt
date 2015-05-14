@@ -1,0 +1,54 @@
+# welcome! we are going to migrate a container AND its data using only the Mesosphere Marathon API
+# lets check the status of our vagrant cluster
+vagrant status
+
+# we have one master and 2 slaves
+
+# lets ask Marathon what tasks it is currently running
+curl -sS http://172.16.255.250:8080/v2/tasks
+
+# first, lets deploy the database app onto the spinning disk node
+cat example/todomvc/db.json \
+  | curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+# next, lets deploy the node.js container onto the spinning disk node
+cat example/todomvc/app.json \
+  | curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+# we ask Marathon to list the tasks it is running now
+curl -sS http://172.16.255.250:8080/v2/tasks
+
+# next - lets confirm that the Mongo container is running on node1
+vagrant ssh node1 -c "sudo docker ps -a | mongo"
+
+# now lets check there is no data saved in the application
+curl -sS http://172.16.255.251:8000/v1 | jq .
+
+# now - we write some data to the todo application
+echo '{"__v":0,"order":0,"title":"apples","_id":"abc123","completed":false}' \
+  | curl -sS -H 'Content-type: application/json' -d @- http://172.16.255.251:8000/v1
+
+echo '{"__v":0,"order":0,"title":"oranges","_id":"abc123","completed":false}' \
+  | curl -sS -H 'Content-type: application/json' -d @- http://172.16.255.251:8000/v1
+
+# now lets check the application saved that data
+curl -sS http://172.16.255.251:8000/v1 | jq .
+
+# cool! so we have some data on node1 - lets stop the Mongo container
+curl -sS -X "DELETE" http://172.16.255.250:8080/v2/apps/mongo
+
+# now - we reschedule the Mongo container onto the node with a SSD disk
+cat example/todomvc/db.json \
+  | sed 's/spinning/ssd/g' \
+  | curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+
+# now we wait for a short time and then ask Marathon to list the tasks it is running
+curl -sS http://172.16.255.250:8080/v2/tasks
+
+# then we check to see the Mongo container is running on node2
+vagrant ssh node2 -c "sudo docker ps -a | mongo"
+
+# finally - we ask our application to list the data it has
+curl -sS http://172.16.255.251:8000/v1 | jq .
+
+# woot! we have migrated a container AND its data using only the Marathon API!
