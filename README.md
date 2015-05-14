@@ -3,6 +3,8 @@
 ![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
 **Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
 
+[![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
+
 We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use [Docker Swarm](https://github.com/docker/swarm) to migrate a database container and its volume between hosts using only the native [Docker Swarm](https://github.com/docker/swarm) CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use [Kubernetes](https://github.com/googlecloudplatform/kubernetes) to acheive the same thing.
 
 [Mesosphere](https://github.com/mesosphere) are building a [DataCenter Operating System](https://mesosphere.com/), ClusterHQ have created [Flocker](https://github.com/clusterhq/flocker) - a data volume manager and Weaveworks have created [Weave](https://github.com/weaveworks/weave), a virtual overlay network for Docker containers.
@@ -171,8 +173,8 @@ The 2 slave nodes each run:
  * powerstrip-flocker - a powerstrip adapter that creates ZFS volumes for containers
  * powerstrip-weave - a powerstrip adapter that networks containers together across hosts
 
-![mesos diagram](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/overview.png "fig 3. mesos")
-###### *fig 4. overview of the Kubernetes cluster*
+![mesos diagram](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/overview.png "fig 8. mesos")
+###### *fig 8. overview of the Kubernetes cluster*
 
 ## Conclusion
 Mesos and Marathon are powerful tools to manage a cluster of machines as though they are one large computer.  We have shown in this demo that you can extend the behaviour of Mesos slaves using [Powerstrip](https://github.com/clusterhq/powerstrip) adapters (and soon official Docker extensions).
