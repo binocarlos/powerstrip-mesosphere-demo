@@ -5,11 +5,11 @@
 
 [![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
 
-We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use [Docker Swarm](https://github.com/docker/swarm) to migrate a database container and its volume between hosts using only the native [Docker Swarm](https://github.com/docker/swarm) CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use [Kubernetes](https://github.com/googlecloudplatform/kubernetes) to acheive the same thing.
+We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use Docker Swarm to migrate a database container and its volume between hosts using only the native Docker Swarm  CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use Kubernetes to acheive the same thing.
 
-[Mesosphere](https://github.com/mesosphere) are building a [DataCenter Operating System](https://mesosphere.com/), ClusterHQ have created [Flocker](https://github.com/clusterhq/flocker) - a data volume manager and Weaveworks have created [Weave](https://github.com/weaveworks/weave), a virtual overlay network for Docker containers.
+[Mesosphere](https://github.com/mesosphere) are building a [Data Center Operating System](https://mesosphere.com/), ClusterHQ have created [Flocker](https://github.com/clusterhq/flocker) - a data volume manager and Weaveworks have created [Weave](https://github.com/weaveworks/weave), a virtual overlay network for Docker containers.
 
-In this post, we will use [Mesos](https://github.com/apache/mesos) to manage our nodes, [Marathon](https://github.com/mesosphere/marathon) to schedule tasks onto nodes, [Flocker](https://github.com/clusterhq/flocker) to migrate data across nodes and [Weave](https://github.com/weaveworks/weave) to connect the containers together.
+Ideally – we want to use all of these systems together so we can use orchestration tools to control storage and networking.  That is the aim of this demo, to show how using Powerstrip, we can extend Docker with tools like Flocker and Weave and still use orchestration tools like Mesos & Marathon.
 
 ## Scenario
 
