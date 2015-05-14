@@ -109,37 +109,52 @@ function write-entry() {
   local order=$2;
   local id="$unixsecs.$order"
 
-  cat $SCRIPT_SRC/test/entry.json | \
+  cat $SCRIPT_SRC/../test/entry.json | \
   sed "s/_ORDER_/$order/" | \
   sed "s/_TITLE_/$text/" | \
   sed "s/_ID_/$id/" | \
-  curl -sS -i -H 'Content-type: application/json' -d @- http://172.16.255.251:8000/v1
+  curl -sS -H 'Content-type: application/json' -d @- http://172.16.255.251:8000/v1
+  echo ""
 }
 
 # read the entries from the todo app
 function check-entries() {
   curl -sS http://172.16.255.251:8000/v1
+  echo ""
 }
 
+function delete-app() {
+  echo "Deleting app $1"
+  curl -X "DELETE" http://172.16.255.250:8080/v2/apps/$1
+  echo ""
+}
+
+function delete-apps() {
+  local id=$1
+  delete-app mongo-$id
+  delete-app app-$id
+}
 
 function run-test() {
   local id=$(date +%s)
   
-  launch-mongo $id spinning
-  launch-app $id
+  #launch-mongo $id spinning
+  #launch-app $id
 
-  wait-for-job mongo-$id node1 mongo:latest
-  wait-for-job app-$id node1 binocarlos/powerstrip-mesosphere-demo:latest
+  #wait-for-job mongo-$id node1 mongo:latest
+  #wait-for-job app-$id node1 binocarlos/powerstrip-mesosphere-demo:latest
 
-  #sleep 2
-  #write-entry "apples" 0
-  #sleep 2
-  #write-entry "oranges" 1
-  #sleep 2
-  #write-entry "pears" 2
-  #sleep 2
+  sleep 2
+  write-entry "apples" 0
+  sleep 2
+  write-entry "oranges" 1
+  sleep 2
+  write-entry "pears" 2
+  sleep 2
 
-  #check-entries
+  check-entries
+
+  delete-apps $id
 }
 
 run-test

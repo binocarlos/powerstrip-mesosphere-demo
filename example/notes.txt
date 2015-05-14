@@ -32,7 +32,7 @@ curl http://172.16.255.250:8080/v2/apps
 curl http://172.16.255.250:8080/v2/tasks
 
 # delete db app
-curl -X "DELETE" http://172.16.255.250:8000/v2/apps/db-spinning
+curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db-spinning
 
 # deploy the database to node2
 cat example/todomvc/db.json | \
