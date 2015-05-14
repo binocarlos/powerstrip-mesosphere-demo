@@ -8,6 +8,9 @@
 #
 
 
+export MARATHON_HOST=${MARATHON_HOST:=http://172.16.255.250:8080}
+export APP_HOST=${APP_HOST:=http://172.16.255.251:8000}
+
 # get the source folder for this script so it does not matter from where the tests are run
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -33,7 +36,7 @@ function launch-mongo() {
   sed "s/\"id\":\"mongo\"/\"id\":\"mongo-$id\"/" | \
   sed "s/mongodata/mongodata$id/" | \
   sed "s/spinning/$disk/" | \
-  curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
+  curl -i -H 'Content-type: application/json' -d @- $MARATHON_HOST/v2/apps
 }
 
 # launch the node.js task via the Marathon REST api
@@ -43,17 +46,12 @@ function launch-app() {
   echo "launching app - $id"
   cat $SCRIPT_SRC/../example/todomvc/app.json | \
   sed "s/\"id\":\"app\"/\"id\":\"app-$id\"/" | \
-  curl -i -H 'Content-type: application/json' -d @- http://172.16.255.250:8080/v2/apps
-}
-
-# use the Marathon REST api to remove the Mongo container
-function delete-mongo() {
-  curl -X "DELETE" http://172.16.255.250:8000/v2/apps/db-spinning
+  curl -i -H 'Content-type: application/json' -d @- $MARATHON_HOST/v2/apps
 }
 
 # parse the Marathon output for the status of a task
 function is-mesos-task-running() {
-  curl -sS http://172.16.255.250:8080/v2/apps/$1 | jq .app.tasksRunning
+  curl -sS $MARATHON_HOST/v2/apps/$1 | jq .app.tasksRunning
 }
 
 # continue to loop over is-mesos-task-running until it is ready
@@ -118,7 +116,7 @@ function write-entry() {
   sed "s/_ORDER_/$order/" | \
   sed "s/_TITLE_/$text/" | \
   sed "s/_ID_/$id/" | \
-  curl -sS -H 'Content-type: application/json' -d @- http://172.16.255.251:8000/v1
+  curl -sS -H 'Content-type: application/json' -d @- $APP_HOST/v1
   echo ""
   sleep 1
 }
@@ -128,7 +126,7 @@ function get-entry-field() {
   local position=$1
   local field=$2
 
-  curl -sS http://172.16.255.251:8000/v1 | jq .[$position].$field | sed 's/"//g'
+  curl -sS $APP_HOST/v1 | jq .[$position].$field | sed 's/"//g'
 }
 
 # check that the saved entry is what is should be (by checking the position and title)
@@ -153,16 +151,25 @@ function check-entry() {
   sleep 1
 }
 
+# check that when we ask the app for data - there is none because we have killed the mongo container
+function check-for-no-entries() {
+  local result=$(curl -sS -m 10 $APP_HOST/v1 | jq '. | length')
+
+  if [[ $result =~ ^[0-9]+$ ]]; then
+    do-error "We were expecting no data but seem to have got some"
+  fi
+}
+
 # tell marathon to delete an app
 function delete-app() {
   echo "Deleting app $1"
-  curl -X "DELETE" http://172.16.255.250:8080/v2/apps/$1
+  curl -X "DELETE" $MARATHON_HOST/v2/apps/$1
   echo ""
 }
 
 # grab a list of apps from Marathon and remove each on if its id starts with mongo- or app-
 function delete-apps() {
-  local totalapps=$(curl -sS http://172.16.255.250:8080/v2/apps | jq '.apps | length')
+  local totalapps=$(curl -sS $MARATHON_HOST/v2/apps | jq '.apps | length')
 
   echo "Found $totalapps apps"
   local COUNTER=0
@@ -170,7 +177,7 @@ function delete-apps() {
   while [  $COUNTER -lt $totalapps ]; do
 
     echo "Getting id for app $COUNTER"
-    local appid=$(curl -sS http://172.16.255.250:8080/v2/apps | jq ".apps[$COUNTER].id" | sed 's/"//g')
+    local appid=$(curl -sS $MARATHON_HOST/v2/apps | jq ".apps[$COUNTER].id" | sed 's/"//g')
 
     echo "Found $appid"
     
@@ -192,6 +199,8 @@ function delete-apps() {
 # main
 function run-test() {
   local id=$(date +%s)
+
+  delete-apps
   
   launch-mongo $id spinning
   launch-app $id
@@ -202,15 +211,44 @@ function run-test() {
   echo "Marathon tasks are running"
 
   sleep 5
+
+  echo "Now writing test values"
   write-entry "apples" 0
   write-entry "oranges" 1
   write-entry "pears" 2
+  sleep 2
+  echo "Now checking test values"
   check-entry "apples" 0
   check-entry "oranges" 1
   check-entry "pears" 2
+  sleep 2
 
-  delete-apps
+  echo "Entries made & checked - am now deleting the mongo app"
+  delete-app mongo-$id
+
+  sleep 5
+
+  echo "Mongo has been stopped - checking we get no values"
+
+  check-for-no-entries
+
+  echo "OK - there are no entries"
+
+
+  #echo "now deploying Mongo to node2"
+  #launch-mongo $id ssd
+
+  #wait-for-job mongo-$id node2 mongo:latest
+
+  #echo "Mongo is now running on node2"
+  #sleep 2
+  #echo "Now checking test values"
+  #check-entry "apples" 0
+  #check-entry "oranges" 1
+  #check-entry "pears" 2
+  #sleep 2
+
+  #delete-apps
 }
 
-#run-test
-delete-apps
+run-test
