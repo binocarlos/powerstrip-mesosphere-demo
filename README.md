@@ -38,6 +38,8 @@ First you need to install:
 
 ## Demo
 
+Lets begin!
+
 ### Step 1: Start VMs
 
 The first step is to clone this repo and start the 3 VMs.
@@ -137,6 +139,46 @@ Now we reload the application in a browser and check that the todo entries we ad
 ```
 http://172.16.255.251:8000/
 ```
+
+## Conclusion
+Mesos and Marathon are powerful tools to manage a cluster of machines as though they are one large computer.  We have shown in this demo that you can extend the behaviour of Mesos slaves using [Powerstrip](https://github.com/clusterhq/powerstrip) adapters (and soon official Docker extensions).
+
+This demo made use of local storage for your data volumes. Local storage is fast and cheap and with [Flocker](https://github.com/clusterhq/flocker), it’s also portable between servers and even clouds. 
+
+We are also working on adding support for block storage so you can use that with your application.
+
+
+## Notes
+
+#### Restart cluster
+
+If you `vagrant halt` the cluster - you will need to restart the cluster using this command:
+
+```bash
+$ make boot
+```
+
+This will `vagrant up` and then run `sudo bash /vagrant/install.sh boot` which spins up all the required services.
+
+## run tests
+
+To run the acceptance tests:
+
+```bash
+$ make test
+```
+
+This will `vagrant up` and then `bash test.sh`.
+
+`test.sh` will use `vagrant ssh -c ""` style commands to run through the following tests:
+
+ * a basic data migration using powerstrip-flocker
+ * launch the frontend and redis-master services and replication controllers
+ * write some data to the guestbook
+ * rewrite the redis-master rc
+ * kill the redis-master pod
+ * wait for the redis-master pod to be scheduled onto node2
+ * check for the data migrated from node2
 
 ## Reference
 
