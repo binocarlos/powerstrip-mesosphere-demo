@@ -234,21 +234,22 @@ function run-test() {
 
   echo "OK - there are no entries"
 
+  echo "now deploying Mongo to node2"
+  launch-mongo $id ssd
 
-  #echo "now deploying Mongo to node2"
-  #launch-mongo $id ssd
+  wait-for-job mongo-$id node2 mongo:latest
 
-  #wait-for-job mongo-$id node2 mongo:latest
+  echo "Mongo is now running on node2"
+  sleep 2
+  echo "Now checking test values"
+  check-entry "apples" 0
+  check-entry "oranges" 1
+  check-entry "pears" 2
+  sleep 2
 
-  #echo "Mongo is now running on node2"
-  #sleep 2
-  #echo "Now checking test values"
-  #check-entry "apples" 0
-  #check-entry "oranges" 1
-  #check-entry "pears" 2
-  #sleep 2
+  delete-apps
 
-  #delete-apps
+  echo "All tests passed"
 }
 
 run-test
