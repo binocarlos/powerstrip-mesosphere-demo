@@ -16,14 +16,14 @@ curl http://172.16.255.250:8080/v2/apps
 curl http://172.16.255.250:8080/v2/tasks
 
 # open the app + input some data (MANUAL)
-http://172.16.255.251:8080
+http://172.16.255.251:8000
 
 # input some data to the app (AUTO)
 echo '{"text":"hello world"}' | \
 curl -i -H 'Content-type: application/json' -d @- http://172.16.255.251:8080/v1
 
 # read data from the app (AUTO)
-curl http://172.16.255.251:8080/v1
+curl http://172.16.255.251:8000/v1
 
 # list current apps
 curl http://172.16.255.250:8080/v2/apps
@@ -32,7 +32,7 @@ curl http://172.16.255.250:8080/v2/apps
 curl http://172.16.255.250:8080/v2/tasks
 
 # delete db app
-curl -X "DELETE" http://172.16.255.250:8080/v2/apps/db-spinning
+curl -X "DELETE" http://172.16.255.250:8000/v2/apps/db-spinning
 
 # deploy the database to node2
 cat example/todomvc/db.json | \
