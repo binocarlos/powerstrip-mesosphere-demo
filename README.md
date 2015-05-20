@@ -17,6 +17,20 @@ Ideally – we want to use all of these systems together so we can use orchestra
 
 [Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
 
+## Problem
+
+It is inevitable that at some point in time, the hardware on which you are running a database container will need upgrading.  As traffic increases, we may find that more RAM, CPU cycles or a faster disk is needed.
+
+Using Marathon it is simple to migrate a database container to another host with more resources.  However, this does not handle the migration of the underlying data.
+
+The problem is: how to do a migration of a database container AND it's data using the Marathon REST API?
+
+## Solution
+
+Using Powerstrip and 2 adapters (one for Flocker and one for Weave) - we are able to use the Flocker ZFS migration feature to solve the migration of the underlying data.
+
+Because Powerstrip presents a standard Docker remote API - it will work with existing tools (like Marathon).  The important point here is that no patches or code changes are required for Docker and Marathon to be extended in this way.
+
 ## Scenario
 
 Our demo is a Backbone version of the classic [TodoMVC](http://todomvc.com/) application.  It is plugged into a node.js [TodoMVCBackend](http://www.todobackend.com/) which saves its data inside a [MongoDB](https://www.mongodb.org/) container.
