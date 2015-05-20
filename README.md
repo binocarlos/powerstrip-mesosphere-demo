@@ -11,6 +11,12 @@ We [recently showed](https://clusterhq.com/blog/migration-database-container-doc
 
 Ideally – we want to use all of these systems together so we can use orchestration tools to control storage and networking.  That is the aim of this demo, to show how using Powerstrip, we can extend Docker with tools like Flocker and Weave and still use orchestration tools like Mesos & Marathon.
 
+## Mesos & Marathon
+
+[Mesos](http://mesos.apache.org/documentation/latest/mesos-architecture/) plays the role of a kernel for accessing hardware resources in a cluster of machines.  Mesos can **offer** resources to registered **frameworks** who will **schedule** jobs onto machines and invoke the framework's **executor** on the choosen machine to run the job.
+
+[Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
+
 ## Scenario
 
 Our demo is a Backbone version of the classic [TodoMVC](http://todomvc.com/) application.  It is plugged into a node.js [TodoMVCBackend](http://www.todobackend.com/) which saves its data inside a [MongoDB](https://www.mongodb.org/) container.
