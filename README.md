@@ -13,7 +13,7 @@ Ideally – we want to use all of these systems together so we can use orchestra
 
 ## Mesos & Marathon
 
-[Mesos](http://mesos.apache.org/documentation/latest/mesos-architecture/) plays the role of a kernel for accessing hardware resources in a cluster of machines.  Mesos can **offer** resources to registered **frameworks** who will **schedule** jobs onto machines and invoke the framework's **executor** on the choosen machine to run the job.
+[Mesos](http://mesos.apache.org/documentation/latest/mesos-architecture/) plays the role of a kernel for accessing hardware resources in a cluster of machines.  Mesos can **offer** resources to registered **frameworks** who will **schedule** jobs onto machines and invoke the framework's **executor** on the chosen machine to run the job.
 
 [Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
 
