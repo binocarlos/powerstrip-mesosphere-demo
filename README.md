@@ -173,7 +173,7 @@ The 2 slave nodes each run:
  * powerstrip-flocker - a powerstrip adapter that creates ZFS volumes for containers
  * powerstrip-weave - a powerstrip adapter that networks containers together across hosts
 
-![mesos diagram](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/overview.png "fig 8. mesos")
+![mesos diagram](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/overview-large.png "fig 8. mesos")
 ###### *fig 8. overview of the Kubernetes cluster*
 
 ## Conclusion
