@@ -1,8 +1,12 @@
 ## Powerstrip-mesosphere-demo
 
+![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
+**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
+
+## Scenario
 The amazing app you just published is gaining traction and the post to Hacker News last week hit home - you've seen a 400% increase in average load!
 
-Clearly - your MongoDB server needs more RAM and CPU - it is a bottleneck in your stack.  Because you wanted to keep costs down, your Mesos cluster is made up from low power machines and you decide to add some much more powerful hardware.  Because you deployed your database inside a Docker container using Marathon, it is simple to re-schedule the container onto a machine with more powerful hardware.
+Clearly - your MongoDB server needs more RAM and CPU - it is a bottleneck in your stack.  Because you wanted to keep costs down, your Mesos cluster is made up from low power machines and you decide to add some much more powerful hardware and faster disks.  Because you deployed your database inside a Docker container using Marathon, it is simple to re-schedule the container onto a machine with more powerful hardware.
 
 #### Problem
 
@@ -10,7 +14,9 @@ When we move the database container, we need a way to migrate the **data also**.
 
 #### Solution
 
-Using Powerstrip, we can use the Flocker ZFS migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it!
+Using Powerstrip, we can use the Flocker local storage migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it!
+
+We could also use MongoDB sharding but started out with m1.small machines and need to upgrade to c3.xlarge machines - we need a way to migrate the initial data whatever we do!
 
 ## Demo
 
@@ -37,8 +43,6 @@ We have added attributes to the 2 Mesos slaves - `disk=spinning` and `disk=ssd` 
 [![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
 
 ## Install
-![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
-**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
 
 First you need to install:
 
@@ -186,9 +190,9 @@ The 2 slave nodes each run:
 ## Conclusion
 Mesos and Marathon are powerful tools to manage a cluster of machines as though they are one large computer.  We have shown in this demo that you can extend the behaviour of Mesos slaves using [Powerstrip](https://github.com/clusterhq/powerstrip) adapters (and soon official Docker extensions).
 
-This demo made use of local storage for your data volumes. Local storage is fast and cheap and with [Flocker](https://github.com/clusterhq/flocker), it’s also portable between servers and even clouds. 
+This demo made use of local storage for your data volumes. Local storage is fast and cheap and with [Flocker](https://github.com/clusterhq/flocker), it’s also portable between servers and even clouds.
 
-We are also working on adding support for block storage so you can use that with your application.
+We are also working on adding support for shared storage to enable failover support when your hosts have access to network (e.g. EBS, SAN) storage.
 
 ## Notes
 
