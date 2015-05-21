@@ -1,15 +1,16 @@
 ## Powerstrip-mesosphere-demo
 
-![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
-**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
+The amazing app you just published is gaining traction and the post to Hacker News last week hit home - you've seen a 400% increase in average load!
 
-[![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
+Clearly - your MongoDB server needs more RAM and CPU - it is a bottleneck in your stack.  Because you wanted to keep costs down, your Mesos cluster is made up from low power machines and you decide to add some much more powerful hardware.  Because you deployed your database inside a Docker container using Marathon, it is simple to re-schedule the container onto a more powerful machine.
 
-We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use Docker Swarm to migrate a database container and its volume between hosts using only the native Docker Swarm  CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use Kubernetes to achieve the same thing.
+#### Problem
 
-[Mesosphere](https://github.com/mesosphere) are building a [Data Center Operating System](https://mesosphere.com/), ClusterHQ have created [Flocker](https://github.com/clusterhq/flocker) - a data volume manager and Weaveworks have created [Weave](https://github.com/weaveworks/weave), a virtual overlay network for Docker containers.
+When we move the database container onto a machine with more powerful hardware, we need a way to migrate the **data also**.  This is essential, otherwise users will not be happy because their data was left on the old machine.  We also need to minimize the downtime required to make the migration otherwise users will not be happy because they cannot access their data for a period of time.
 
-Ideally – we want to use all of these systems together so we can use orchestration tools to control storage and networking.  That is the aim of this demo, to show how using Powerstrip, we can extend Docker with tools like Flocker and Weave and still use orchestration tools like Mesos & Marathon.
+#### Solution
+
+Using Powerstrip we can use the Flocker ZFS migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it.
 
 ## Mesos & Marathon
 
@@ -17,19 +18,15 @@ Ideally – we want to use all of these systems together so we can use orchestra
 
 [Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
 
-## Problem
+![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
+**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
 
-It is inevitable that at some point in time, the hardware on which you are running a database container will need upgrading.  As traffic increases, we may find that more RAM, CPU cycles or a faster disk is needed.
+We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use Docker Swarm to migrate a database container and its volume between hosts using only the native Docker Swarm  CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use Kubernetes to achieve the same thing.
 
-Using Marathon it is simple to migrate a database container to another host with more resources.  However, this does not handle the migration of the underlying data.
+[Mesosphere](https://github.com/mesosphere) are building a [Data Center Operating System](https://mesosphere.com/), ClusterHQ have created [Flocker](https://github.com/clusterhq/flocker) - a data volume manager and Weaveworks have created [Weave](https://github.com/weaveworks/weave), a virtual overlay network for Docker containers.
 
-The problem is: how to do a migration of a database container AND it's data using the Marathon REST API?
+Ideally – we want to use all of these systems together so we can use orchestration tools to control storage and networking.  That is the aim of this demo, to show how using Powerstrip, we can extend Docker with tools like Flocker and Weave and still use orchestration tools like Mesos & Marathon.
 
-## Solution
-
-Using Powerstrip and 2 adapters (one for Flocker and one for Weave) - we are able to use the Flocker ZFS migration feature to solve the migration of the underlying data.
-
-Because Powerstrip presents a standard Docker remote API - it will work with existing tools (like Marathon).  The important point here is that no patches or code changes are required for Docker and Marathon to be extended in this way.
 
 ## Scenario
 
@@ -59,6 +56,8 @@ First you need to install:
 *We’ll use [Vagrant](http://www.vagrantup.com/downloads.html) to simulate our application stack locally. You could also run this demo on AWS or Rackspace with minimal modifications.*
 
 ## Demo
+
+[![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
 
 Lets begin!
 
