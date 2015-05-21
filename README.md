@@ -185,7 +185,7 @@ The 2 slave nodes each run:
  * powerstrip-weave - a powerstrip adapter that networks containers together across hosts
 
 ![mesos diagram](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/overview-large.png "fig 8. mesos")
-###### *fig 8. overview of the Kubernetes cluster*
+###### *fig 8. overview of the Mesosphere cluster*
 
 ## Conclusion
 Mesos and Marathon are powerful tools to manage a cluster of machines as though they are one large computer.  We have shown in this demo that you can extend the behaviour of Mesos slaves using [Powerstrip](https://github.com/clusterhq/powerstrip) adapters (and soon official Docker extensions).
