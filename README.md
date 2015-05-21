@@ -2,15 +2,15 @@
 
 The amazing app you just published is gaining traction and the post to Hacker News last week hit home - you've seen a 400% increase in average load!
 
-Clearly - your MongoDB server needs more RAM and CPU - it is a bottleneck in your stack.  Because you wanted to keep costs down, your Mesos cluster is made up from low power machines and you decide to add some much more powerful hardware.  Because you deployed your database inside a Docker container using Marathon, it is simple to re-schedule the container onto a more powerful machine.
+Clearly - your MongoDB server needs more RAM and CPU - it is a bottleneck in your stack.  Because you wanted to keep costs down, your Mesos cluster is made up from low power machines and you decide to add some much more powerful hardware.  Because you deployed your database inside a Docker container using Marathon, it is simple to re-schedule the container onto a machine with more powerful hardware.
 
 #### Problem
 
-When we move the database container onto a machine with more powerful hardware, we need a way to migrate the **data also**.  This is essential, otherwise users will not be happy because their data was left on the old machine.  We also need to minimize the downtime required to make the migration otherwise users will not be happy because they cannot access their data for a period of time.
+When we move the database container, we need a way to migrate the **data also**.  This is essential, otherwise users will not be happy because their data was left on the old machine.  We also need to minimize the downtime required to make this migration.
 
 #### Solution
 
-Using Powerstrip we can use the Flocker ZFS migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it.
+Using Powerstrip, we can use the Flocker ZFS migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it!
 
 #### Mesos & Marathon
 
@@ -34,8 +34,14 @@ This represents a real world migration where we realise that our database server
 ![after migration](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/after.png "fig 2. after migration")
 ###### *fig 2. Mongo container & data volume migrated to node 2*
 
+## Screencast
+
+[![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
 
 ## Install
+![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
+**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
+
 First you need to install:
 
  * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
@@ -44,13 +50,6 @@ First you need to install:
 *We’ll use [Virtualbox](https://www.virtualbox.org/wiki/Downloads) to supply the virtual machines that our [Mesosphere](https://mesosphere.com/) cluster will run on.*
 
 *We’ll use [Vagrant](http://www.vagrantup.com/downloads.html) to simulate our application stack locally. You could also run this demo on AWS or Rackspace with minimal modifications.*
-
-## Screencast
-
-[![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
-
-![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
-**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
 
 ### Step 1: Start VMs
 
