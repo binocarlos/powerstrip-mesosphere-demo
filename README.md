@@ -18,6 +18,8 @@ Using Powerstrip we can use the Flocker ZFS migration feature to move the data t
 
 [Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
 
+## Scenario
+
 ![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
 **Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
 
@@ -28,7 +30,7 @@ We [recently showed](https://clusterhq.com/blog/migration-database-container-doc
 Ideally – we want to use all of these systems together so we can use orchestration tools to control storage and networking.  That is the aim of this demo, to show how using Powerstrip, we can extend Docker with tools like Flocker and Weave and still use orchestration tools like Mesos & Marathon.
 
 
-## Scenario
+## Demo
 
 Our demo is a Backbone version of the classic [TodoMVC](http://todomvc.com/) application.  It is plugged into a node.js [TodoMVCBackend](http://www.todobackend.com/) which saves its data inside a [MongoDB](https://www.mongodb.org/) container.
 
@@ -55,11 +57,9 @@ First you need to install:
 
 *We’ll use [Vagrant](http://www.vagrantup.com/downloads.html) to simulate our application stack locally. You could also run this demo on AWS or Rackspace with minimal modifications.*
 
-## Demo
+## Screencast
 
 [![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
-
-Lets begin!
 
 ### Step 1: Start VMs
 
