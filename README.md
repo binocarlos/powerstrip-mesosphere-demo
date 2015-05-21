@@ -18,8 +18,6 @@ Our demo is a Backbone version of the classic [TodoMVC](http://todomvc.com/) app
 
 We have added attributes to the 2 Mesos slaves - `disk=spinning` and `disk=ssd` to represent the types of disk they have.  The Mongo container is first allocated onto the node with the spinning disk and then migrated (along with its data) onto the node with an ssd drive.
 
-This represents a real world migration where we realise that our database server needs a faster disk.
-
 #### Before migration
 ![before migration](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/before.png "fig 1. before migration")
 ###### *fig 1. node.js container accessing Mongo container on node 1*
