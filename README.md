@@ -6,7 +6,7 @@
 ## Scenario
 The amazing app you just published is gaining traction and the post to Hacker News last week hit home - you've seen a 400% increase in average load!
 
-Clearly - your MongoDB server needs more RAM and CPU - it is a bottleneck in your stack.  Because you wanted to keep costs down, your Mesos cluster is made up from low power machines and you decide to add some much more powerful hardware and faster disks.  Because you deployed your database inside a Docker container using Marathon, it is simple to re-schedule the container onto a machine with more powerful hardware.
+Clearly - your MongoDB server needs more resources - it is a bottleneck in your stack.  Because you wanted to keep costs down, your Mesos cluster is made up from low power machines and you decide to add some much more powerful hardware and faster disks.  Because you deployed your database inside a Docker container using Marathon, it is simple to re-schedule the container onto a machine with more powerful hardware.
 
 #### Problem
 
@@ -16,7 +16,7 @@ When we move the database container, we need a way to migrate the **data also**.
 
 Using Powerstrip, we can use the Flocker local storage migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it!
 
-We could also use MongoDB sharding but started out with m1.small machines and need to upgrade to c3.xlarge machines - we need a way to migrate the initial data whatever we do!
+We could use MongoDB sharding but started out with m1.small machines and need to upgrade to c3.xlarge machines - we need a way to migrate the initial data whatever we do!
 
 ## Demo
 
