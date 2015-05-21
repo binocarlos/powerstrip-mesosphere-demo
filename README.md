@@ -12,23 +12,11 @@ When we move the database container onto a machine with more powerful hardware, 
 
 Using Powerstrip we can use the Flocker ZFS migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it.
 
-## Mesos & Marathon
+#### Mesos & Marathon
 
 [Mesos](http://mesos.apache.org/documentation/latest/mesos-architecture/) plays the role of a kernel for accessing hardware resources in a cluster of machines.  Mesos can **offer** resources to registered **frameworks** who will **schedule** jobs onto machines and invoke the framework's **executor** on the chosen machine to run the job.
 
 [Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
-
-## Scenario
-
-![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
-**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
-
-We [recently showed](https://clusterhq.com/blog/migration-database-container-docker-swarm/) how you could use Docker Swarm to migrate a database container and its volume between hosts using only the native Docker Swarm  CLI.  We [then demonstrated](https://clusterhq.com/blog/data-migration-kubernetes-flocker/) how to use Kubernetes to achieve the same thing.
-
-[Mesosphere](https://github.com/mesosphere) are building a [Data Center Operating System](https://mesosphere.com/), ClusterHQ have created [Flocker](https://github.com/clusterhq/flocker) - a data volume manager and Weaveworks have created [Weave](https://github.com/weaveworks/weave), a virtual overlay network for Docker containers.
-
-Ideally – we want to use all of these systems together so we can use orchestration tools to control storage and networking.  That is the aim of this demo, to show how using Powerstrip, we can extend Docker with tools like Flocker and Weave and still use orchestration tools like Mesos & Marathon.
-
 
 ## Demo
 
@@ -60,6 +48,9 @@ First you need to install:
 ## Screencast
 
 [![asciicast](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw.png)](https://asciinema.org/a/76dojidwailodmxdjfyw5yfyw)
+
+![warning](https://raw.github.com/binocarlos/powerstrip-k8s-demo/master/img/error.png "warning")
+**Please note:** *because this demo uses [Powerstrip](https://github.com/clusterhq/powerstrip), which is only meant for prototyping Docker extensions, we do not recommend this configuration for anything approaching production usage. When Docker extensions become official, [Flocker](https://github.com/clusterhq/flocker) and [Weave](https://github.com/weaveworks/weave) will support them. Until then, this is just a proof-of-concept.*
 
 ### Step 1: Start VMs
 
