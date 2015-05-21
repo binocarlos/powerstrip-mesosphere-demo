@@ -12,12 +12,6 @@ When we move the database container, we need a way to migrate the **data also**.
 
 Using Powerstrip, we can use the Flocker ZFS migration feature to move the data to a new server.  This means we are treating the container and the data as an atomic unit - when Marathon re-schedules the container to another machine - Flocker moves the data alongside it!
 
-#### Mesos & Marathon
-
-[Mesos](http://mesos.apache.org/documentation/latest/mesos-architecture/) plays the role of a kernel for accessing hardware resources in a cluster of machines.  Mesos can **offer** resources to registered **frameworks** who will **schedule** jobs onto machines and invoke the framework's **executor** on the chosen machine to run the job.
-
-[Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
-
 ## Demo
 
 Our demo is a Backbone version of the classic [TodoMVC](http://todomvc.com/) application.  It is plugged into a node.js [TodoMVCBackend](http://www.todobackend.com/) which saves its data inside a [MongoDB](https://www.mongodb.org/) container.
@@ -33,6 +27,12 @@ This represents a real world migration where we realise that our database server
 #### After migration
 ![after migration](https://raw.github.com/binocarlos/powerstrip-mesosphere-demo/master/img/after.png "fig 2. after migration")
 ###### *fig 2. Mongo container & data volume migrated to node 2*
+
+#### Mesos & Marathon
+
+[Mesos](http://mesos.apache.org/documentation/latest/mesos-architecture/) plays the role of a kernel for accessing hardware resources in a cluster of machines.  Mesos can **offer** resources to registered **frameworks** who will **schedule** jobs onto machines and invoke the framework's **executor** on the chosen machine to run the job.
+
+[Marathon](https://mesosphere.github.io/marathon/) plays the role of a cluster-wide init and control system.  It runs as a Mesos framework and presents a [REST API](https://mesosphere.github.io/marathon/docs/rest-api.html) that can be used to deploy long running Docker containers across the cluster.
 
 ## Screencast
 
